@@ -4,9 +4,9 @@ def suorakulma(sivuA, sivuB, lavistaja):
     """Tarkistaa suorakulmaisuuden käyttäen Pythagoraan lausetta
 
     Args:
-        sivuA (float): Ensimmäisen pituus
-        sivuB (float): Toisen pituus
-        lavistaja (float): Lävistäjän pituus
+        sivuA (float): Ensimmäisen seinän pituus
+        sivuB (float): Toisen seinän pituus
+        lavistaja (float): Huoneen lävistäjän pituus
 
     Returns:
         boolean: TRUE -> suorakulma
