@@ -10,13 +10,13 @@ def suorakulma(sivuA, sivuB, lavistaja):
     Returns:
         float: Lävistäjän pituusvirhe 0 -> ei virhettä
     """
+    # TODO: Tee tähän virhe jos joku luvuista on 0
     try:  
         A_nelio = sivuA * sivuA
         B_nelio = sivuB * sivuB
         l_nelio = lavistaja * lavistaja
-    # FIXME: jos antaa vahingossa kirjaimen arvoksi -> kaatuu
         pitaisi_olla = A_nelio + B_nelio
-        ero = (l_nelio - pitaisi_olla)**0.5
+        ero = l_nelio ** 0.5 - pitaisi_olla ** 0.5
         
     except:
         ero = 999
