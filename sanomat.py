@@ -116,13 +116,13 @@ def lopullinen_sanoma(sanoma, varmiste):
     varmiste = str(jakojaannos)
     return varmiste '''
 
-# Funktio hyödyntää aiemmin määriteltyjä funktioita
+# Funktio hyödyntää aiemmin määriteltyjä funktioita  
 ''' def muodosta_varmiste2(merkit, jakaja):
     summa = summaa_merkit(merkit)
     varmiste = str(summa % jakaja)
     return varmiste
  '''
-# Koodia voidaan edelleen tiivistää
+# Koodia voidaan edelleen tiivistää     ||   Muodostetaan merkeistä varmiste valittua jakajaa käyttäen
 def muodosta_varmiste(merkit, jakaja):
     return str(summaa_merkit(merkit) % jakaja)
 
