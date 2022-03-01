@@ -1,5 +1,5 @@
 # MODULI MITTAUSSANOMIEN KÄSITTELYYN
-#TODO: tee esimerkki siitä, miten rakennetaan sanoma
+
 
 # Sanoma koostuu alkumerkistä <, datasta, loppumerkistä > ja varmistussummasta
 # Varmistussumma lasketaan siten, että kirjainten ascii koodit
@@ -9,7 +9,7 @@
 # Pohdittavaksi: varmistussumma ennen vai jälkeen loppumerkin
 
 # <3000|4007|5080|74.4|103>
-#TODO: esimerkki, miten puretaan.
+
 # Sanoman sisältämät tiedot tallennetaan avain-arvopareiksi
 # Esim. {'seinä 1' : 2400, 'seinä 2' : 2500 ...}
 # Tietojen oikeellisuus tarkistetaan laskemalla varmistussumma
@@ -17,122 +17,106 @@
 
 # Kirjastojen ja modulien lataukset
 
-# Funktio, jolla muodostetaan sanoman sisältö
-def muodosta_sanoma(seina1, seina2, ristimitta, virhe):
-    """Muodostaa merkkijonon sanomarakennetta varten
-
-    Args:
-        seina1 (float): ensimmäisen seinän pituus mm
-        seina2 (float): toisen seinän pituus mm
-        ristimitta (float): seinien välinen ristimitta
-        virhe (float): lasketun ja mitatun ristimitan välinen ero
-
-    Returns:
-        string: tiedot merkkijonoksi muutettuna, tietojen välissä |
-    """
-    merkkijono = str(seina1) + '|' + str(seina2) + '|' + str(ristimitta) + '|' + str(virhe) + '|'
-    return merkkijono
-
-
-def muodosta_sanoma2(seina1, seina2, ristimitta, virhe):
-    """Muodostaa merkkijonon sanomarakennetta varten
-
-    Args:
-        seina1 (float): ensimmäisen seinän pituus mm
-        seina2 (float): toisen seinän pituus mm
-        ristimitta (float): seinien välinen ristimitta
-        virhe (float): lasketun ja mitatun ristimitan välinen ero
-
-    Returns:
-        string: tiedot merkkijonoksi muutettuna, tietojen välissä |
-    """
-    merkkijono = f'{seina1}|{seina2}|{ristimitta}|{virhe}|'
-    return merkkijono
-
+# Lasketaan merkkijonon ASCII-arvot yhteen
 def summaa_merkit(merkkijono):
     """Laskee merkkijonon kirjainten ASCII-arvot yhteen
-
     Args:
         merkkijono (string): merkkijono, jonka kirjaimista summa lasketaan
-
     Returns:
         integer: kirjainten ASCII-koodien summa
     """
-    
-    
     summa = 0
     for kirjain in merkkijono:
         numeroarvo = ord(kirjain)
         summa = summa + numeroarvo
     return summa
 
-def laske_varmiste(summa):
-    """Laskee modulo 127 tarkisteen
-
-    Args:
-        summa (integer): luku, josta tarkiste lasketaan
-
-    Returns:
-        integer: jakojäännös 127:llä jaettaessa
-    """
-    
-    varmiste = summa % 127
-    return varmiste
-
-def lopullinen_sanoma(sanoma, varmiste):
-    """Koostaa lopullisen sanoman
-
-    Args:
-        sanoma (string): pituustiedot sisältävä merkkijono
-        varmiste (integer): varmiste
-
-    Returns:
-        string: kokonainen sanoma, jossa on alku- ja loppumerkit mukana
-    """
-    varmiste_str = str(varmiste)
-    sanoma = '<' + sanoma + varmiste_str + '>'
-    return sanoma
-
-# TODO: Yhdistä kaikki yhteen sanomaan eli alku- ja loppumerkit sekä varmiste tekstinä
-
-# TODO: Refaktoroi(=tiivistetty) summaa_merkit() ja laske_varmiste() -funktiot yhdeksi funktioksi
-# siten, että jakaja on funktion toisena argumenttina
-''' def muodosta_varmiste(merkit, jakaja):
-    
-    """Muodostaa merkkijonosta varmisteen käyttäjän määrittelemällä jakajalla
-
-    Args:
-        merkit (string): merkkijono, josta jakojäännös(modulo) lasketaan
-        jakaja (integer): jakaja
-
-    Returns:
-        string: jakojäännös merkkijonoksi muutettuna
-    """
-    summa = 0
-    for kirjain in merkit:
-        numeroarvo = ord(kirjain)
-        summa = summa + numeroarvo
-    jakojaannos = summa  % jakaja
-    varmiste = str(jakojaannos)
-    return varmiste '''
-
-# Funktio hyödyntää aiemmin määriteltyjä funktioita  
-''' def muodosta_varmiste2(merkit, jakaja):
-    summa = summaa_merkit(merkit)
-    varmiste = str(summa % jakaja)
-    return varmiste
- '''
-# Koodia voidaan edelleen tiivistää     ||   Muodostetaan merkeistä varmiste valittua jakajaa käyttäen
+# Muodostetaan merkeistä modulovarmiste valittua jakajaa käyttäen
 def muodosta_varmiste(merkit, jakaja):
     return str(summaa_merkit(merkit) % jakaja)
 
+#Yleispätevä funktio sanoman muodostamiseen 
+def luo_sanoma(arvot, alkumerkki, loppumerkki, erotin, jakaja):
+    """ Muodostaa sanoman, joka koostuu alkumerkistä, arvoista, varmistussummasta \n
+    ja loppumerkistä. Arvojen välillä on haluttu erotinmerkki
+    Args:
+        arvot (list): sanomaan sisällöksi halutut arvot
+        alkumerkki (string): merkki, jolla ilmaistaan sanoman alku
+        loppumerkki (string): merkki, jolla ilmaistaan sanoman päättyminen
+        erotin (string): arvojen välille tuleva välimerkki
+        jakaja (int): jakojäännöksen laskennassa käytettävä jakaja
+    Returns:
+        string: Valmis sanoma 
+    """
+    sanoma = '' # Alustetaan sanoma tyhjäksi
+
+    # Luetaan listan arvot ja muutetaan merkkijonoksi sekä lisätään erotinmerkki
+    for arvo in arvot:
+        sanoma = sanoma + str(arvo) + erotin
+
+    # Lisätaan sanomaan alkumerkki, varmiste ja loppumerkki
+    sanoma = alkumerkki + sanoma + muodosta_varmiste(sanoma, jakaja) + loppumerkki    
+    return sanoma
+
+ # Rakenna purkutestin perusteella funktio ja tee sille testi
+ # TODO: Lisää tähän funktioon doc string
+ # TODO: Muokkaa niin, että palauttaa arvon lisäksi virhekoodin ja -ilmoituksen
+ # 0 -> ei virhettä, 1 -> alkumerkki puuttuu, 2 -> loppumerkki puutuu jne.
+def pura_sanoma(sanoma,alkumerkki,loppumerkki,erotin, jakaja):
+    """Purkaa sanoman, kun sille kerrotaan muodostussäännöt
+    Args:
+        sanoma (string): Vastaanotettu sanoma
+        alkumerkki (string): Sanoman aloittava erikoismerkki
+        loppumerkki (string): Sanoman päättävä erikoismerkki
+        erotin (string): kenttien välinen erotinmerkki
+        jakaja (int): modulotarkistuksen jakaja
+    Returns:
+        list: lista arvoista (list string), virhekoodi (integer), virhesanoma (string)
+    """
+    arvot = [] # Alustetaan arvoksi tyhjä lista
+    osat = [] # Alustetaan sanoman osat tyhjäksi listaksi
+    virhekoodi = 0 # Normaalitilanteen virhekoodi
+    virhesanoma = "Data OK" # Normaalitilanteen virhesanoma
+
+    # Varmistetaan, että ensimmäinen merkki on alkumerkki
+    if sanoma[0] == alkumerkki:
+
+        # Varmistetaan, että viimeinen merkki on loppumerkki
+        if sanoma[-1] == loppumerkki:
+            sanoma = sanoma[1:-1] # Poistetaan alku- ja loppumerkit
+            
+            osat = sanoma.split(erotin) # Muodostetaan osat jakamalla sanoma erottimen kohdalta
+
+            # Osia pitää ollä vähintää 2: arvo ja varmistussumma
+            if len(osat) >= 2:
+                alkuperainen_varmiste = int(osat[-1]) # Luetaan varmiste ja muutetaan se kokonaisluvuksi
+                arvo_osat = f"{'|'.join(osat[0:-1])}|"
+                # Muodostetaan arvoista ja erottimesta sanoman arvot sisältävä osa
+                laskettu_varmiste = int(muodosta_varmiste(arvo_osat, jakaja)) # Lasketaan varmiste uudelleen
+
+            else:
+                virhekoodi = 3
+                virhesanoma = "Sanoma ei sisällä tarvittavaa dataa, viestissä ainoastaan varmiste"
+                
+            # Varmistetaan, että alkuperäinen ja uudelleenlaskettu varmiste ovat samat
+            # BUG: jatkaa tästä, vaikka tapahtuu virhe 3. Siirrä oikeaan paikkaan if(len) sisään!
+            if alkuperainen_varmiste == laskettu_varmiste:
+                arvot = (osat[0:-1]) # Muodostetaan arvoluettelo
+
+            else:
+                virhekoodi = 4
+                virhesanoma = 'Sanoma vahingoittunut, varmistussumma ei täsmää'
+
+        else:
+            virhekoodi = 2
+            virhesanoma = 'Sanoma vajaa, loppumerkki puuttuu'
+    else:
+        virhekoodi = 1
+        virhesanoma = 'Sanoma vajaa, alkumerkki puuttuu'
+
+    # Palautetaan arvot             
+    return [arvot, virhekoodi, virhesanoma]
+
+
 if __name__ == "__main__":
-    merkkijono = muodosta_sanoma(3000,4000,5003,3)
-    print(merkkijono)
-    summa = summaa_merkit(merkkijono)
-    print('merkkien summa on:',summa)
-    varmiste = laske_varmiste(summa)
-    print('Modulo 127 varmiste on', varmiste)
-    valmis_sanoma = lopullinen_sanoma(merkkijono, varmiste)
-    print('Valmis sanoma näyttää tältä', valmis_sanoma)
-    
+    pass
